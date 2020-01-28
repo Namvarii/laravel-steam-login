@@ -1,0 +1,21 @@
+{
+    "name": "namvarii/laravel-steam-login",
+    "description": "Performs a login on steamcommunity.com",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/kronthto/steam-login",
+    "authors": [
+        {
+            "name": "Mahdi Namvari",
+            "email": "namvariii@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "autoload": {
+        "psr-4": { "Namvarii\\SteamLogin\\": "src/" }
+    }
+}
