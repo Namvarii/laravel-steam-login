@@ -3,8 +3,6 @@
 namespace Namvarii\SteamLogin;
 
 use GuzzleHttp\Client;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
 
 class SteamRSAKey
 {
@@ -37,12 +35,12 @@ class SteamRSAKey
             ],
         )));
 
-        $this->publickey_mod = new BigInteger($responseBody->publickey_mod, 16);
-        $this->publickey_exp = new BigInteger($responseBody->publickey_exp, 16);
+        $this->publickey_mod = new \Math_BigInteger($responseBody->publickey_mod, 16);
+        $this->publickey_exp = new \Math_BigInteger($responseBody->publickey_exp, 16);
         $this->timestamp = $responseBody->timestamp;
 
-        $this->rsa_key = new RSA();
-        $this->rsa_key->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+        $this->rsa_key = new \Crypt_RSA();
+        $this->rsa_key->setEncryptionMode(CRYPT_RSA_MODE_OPENSSL);
         $this->rsa_key->loadKey(array(
             'e' => $this->publickey_exp,
             'n' => $this->publickey_mod,
