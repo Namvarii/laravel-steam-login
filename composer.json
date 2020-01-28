@@ -3,7 +3,6 @@
     "description": "Performs a login on steamcommunity.com",
     "type": "library",
     "license": "MIT",
-    "homepage": "https://github.com/kronthto/steam-login",
     "authors": [
         {
             "name": "Mahdi Namvari",
