@@ -55,8 +55,51 @@ class SteamLogin
                 'username' => $username,
             ],
         ));
+        
         Utils::jsonBody($response); // Only for the validation of success
 
         return Utils::getCookie($client, 'steamLoginSecure');
+    }
+    public static function getSteamLoginSecure($username, $password, $otp, $useragent = null, Client &$client = null)
+    {
+        $clientConf = [
+            'cookies' => true,
+        ];
+        if ($useragent) {
+            $clientConf['headers'] = [
+                'User-Agent' => $useragent,
+            ];
+        }
+        $client = new Client($clientConf);
+
+        $steamRSA = new SteamRSAKey($username, $client);
+
+        $encryptedPass = $steamRSA->encrypt($password);
+        if (strlen($encryptedPass) < 32) {
+            throw new SteamLoginException('Error encrypting password (encrypted string too short)');
+        }
+
+        // The real login, now that we have the password encrypted with the publickey from Steam
+        /** @var \GuzzleHttp\Psr7\Response $response */
+        $response = $client->post(self::STEAMCOMM_WEBSITE.'/login/dologin/', array(
+            'form_params' => [
+                'captcha_text' => '',
+                'captchagid' => -1,
+                'donotcache' => Utils::microtime_ms(true),
+                'emailauth' => '',
+                'emailsteamid' => '',
+                'loginfriendlyname' => '',
+                'password' => $encryptedPass,
+                'remember_login' => 'true',
+                'rsatimestamp' => $steamRSA->getSteamTimestamp(),
+                'twofactorcode' => $otp,
+                'username' => $username,
+            ],
+        ));
+        Utils::jsonBody($response); // Only for the validation of success
+
+        return $client->getConfig('cookies');
+
+        // return Utils::getCookie($client, 'steamLoginSecure');
     }
 }
